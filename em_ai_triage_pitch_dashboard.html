@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Research Proposal — AI/LLM Triage Decision Support in the ED</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .page-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 40px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #2d3348;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    .header-left { flex: 1; }
+    .proposal-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+      background: #ef4444;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .meta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .meta-value {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .meta-divider {
+      width: 1px;
+      height: 14px;
+      background: #2d3348;
+      align-self: center;
+    }
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .header-stat {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .header-stat span {
+      font-size: 14px;
+      font-weight: 700;
+      color: #4ade80;
+      margin-left: 6px;
+    }
+
+    /* ── Abstract ── */
+    .abstract {
+      background: #161b27;
+      border-left: 3px solid #3b82f6;
+      border-radius: 0 8px 8px 0;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+    .abstract-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 8px;
+    }
+    .abstract p {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.75;
+    }
+
+    /* ── Grid layouts ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .full { margin-bottom: 16px; }
+
+    /* ── Cards ── */
+    .card {
+      background: #1e2330;
+      border: 1px solid #2d3348;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card.accent-red    { border-top: 3px solid #ef4444; }
+    .card.accent-blue   { border-top: 3px solid #3b82f6; }
+    .card.accent-green  { border-top: 3px solid #22c55e; }
+    .card.accent-amber  { border-top: 3px solid #f59e0b; }
+    .card.accent-purple { border-top: 3px solid #a855f7; }
+    .card.accent-cyan   { border-top: 3px solid #06b6d4; }
+
+    .card-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+
+    /* ── Stat blocks ── */
+    .stat-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+
+    /* ── Research questions ── */
+    .rq-box {
+      background: #161b27;
+      border: 1px solid #2d3348;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    .rq-box:last-child { margin-bottom: 0; }
+    .rq-box.primary { border-color: #3b82f6; }
+    .rq-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .rq-label.primary { color: #3b82f6; }
+    .rq-label.secondary { color: #64748b; }
+    .rq-box p {
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.65;
+    }
+
+    /* ── Study design ── */
+    .design-header {
+      display: grid;
+      grid-template-columns: 140px 1fr 90px 90px;
+      gap: 12px;
+      padding: 0 16px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #475569;
+      border-bottom: 1px solid #2d3348;
+      margin-bottom: 8px;
+    }
+    .design-option {
+      display: grid;
+      grid-template-columns: 140px 1fr 90px 90px;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      background: #161b27;
+    }
+    .design-option:last-child { margin-bottom: 0; }
+    .design-option.recommended { border-color: #3b82f6; }
+    .design-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .design-rec {
+      font-size: 10px;
+      color: #3b82f6;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    .design-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .badge-green  { background: #14532d; color: #4ade80; }
+    .badge-amber  { background: #451a03; color: #fbbf24; }
+    .badge-red    { background: #450a0a; color: #f87171; }
+    .badge-blue   { background: #1e3a5f; color: #60a5fa; }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; }
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding-bottom: 20px;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 36px;
+    }
+    .tl-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1e2330;
+      border: 2px solid #3b82f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #3b82f6;
+      flex-shrink: 0;
+    }
+    .tl-line {
+      width: 2px;
+      flex: 1;
+      background: #2d3348;
+      min-height: 18px;
+      margin-top: 4px;
+    }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-content { padding-top: 3px; flex: 1; }
+    .tl-week {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 2px;
+    }
+    .tl-task {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin-bottom: 3px;
+    }
+    .tl-detail { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+    /* ── Resources ── */
+    .resource-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2d3348;
+    }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-name { font-size: 13px; color: #e2e8f0; }
+    .resource-note { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .resource-cost { font-size: 14px; font-weight: 700; color: #4ade80; }
+    .total-row {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #3b82f6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-label { font-size: 13px; font-weight: 700; color: #f8fafc; }
+    .total-value { font-size: 22px; font-weight: 800; color: #4ade80; }
+
+    /* ── Gaps ── */
+    .gap-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 11px;
+      align-items: flex-start;
+    }
+    .gap-item:last-child { margin-bottom: 0; }
+    .gap-icon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #a855f7;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .gap-text { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+
+    /* ── Outcomes ── */
+    .outcome-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 11px;
+      align-items: flex-start;
+    }
+    .outcome-row:last-child { margin-bottom: 0; }
+    .outcome-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .outcome-text { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+
+    /* ── Journals ── */
+    .journal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2d3348;
+    }
+    .journal-item:last-child { border-bottom: none; }
+    .journal-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+    .journal-meta { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    /* ── Why Now callout ── */
+    .why-now-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .why-item {
+      background: #161b27;
+      border-radius: 8px;
+      padding: 14px 16px;
+      border: 1px solid #2d3348;
+    }
+    .why-num {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ef4444;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .why-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 4px;
+    }
+    .why-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
+
+    /* ── Section divider ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #475569;
+      margin: 28px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2d3348;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid #2d3348;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+    }
+    .footer-left { font-size: 12px; color: #475569; }
+    .footer-right {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-stat {
+      font-size: 11px;
+      color: #475569;
+    }
+    .footer-stat span { color: #94a3b8; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4, .why-now-grid { grid-template-columns: 1fr; }
+      .design-option, .design-header { grid-template-columns: 1fr 1fr; }
+      .design-header { display: none; }
+      .header-top { flex-direction: column; }
+      .header-right { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ── Header ── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="proposal-tag">Research Proposal · 2026</div>
+        <h1>AI and Large Language Model Triage<br>Decision Support in the Emergency Department</h1>
+        <div class="header-meta">
+          <div class="meta-item">
+            <div class="meta-label">Field</div>
+            <div class="meta-value">Emergency Medicine</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-label">Focus</div>
+            <div class="meta-value">AI · Clinical Decision Support · Health Equity</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-label">Proposed By</div>
+            <div class="meta-value">Michael Molen · MS4</div>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-stat">Estimated Budget<span>~$50</span></div>
+        <div class="header-stat">Time to Data<span>4–6 weeks</span></div>
+        <div class="header-stat">IRB Required<span>No*</span></div>
+        <div class="header-stat">Publication Potential<span>High</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Abstract ── -->
+  <div class="abstract">
+    <div class="abstract-label">Overview</div>
+    <p>Emergency department triage accuracy is critical — undertriage of high-acuity patients carries significant patient safety risk. Large language models (LLMs) such as GPT-4 and Claude have recently demonstrated an ability to interpret clinical text, yet their performance on structured triage tasks remains poorly characterised. This study proposes a systematic evaluation of LLM-assigned Emergency Severity Index (ESI) scores against those of board-certified emergency physicians using a standardised set of clinical vignettes, with analysis of accuracy, undertriage rate, and performance variation across chief complaint categories and patient demographics.</p>
+  </div>
+
+  <!-- ── Why Now ── -->
+  <div class="section-label">Why This Research Matters Now</div>
+  <div class="full card">
+    <div class="why-now-grid">
+      <div class="why-item">
+        <div class="why-num">60–70%</div>
+        <div class="why-title">Current LLM Triage Accuracy</div>
+        <div class="why-desc">Early studies show LLMs achieve only moderate accuracy on ESI scoring — but fail to identify which clinical scenarios are most dangerous. That gap is unstudied.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">~0</div>
+        <div class="why-title">Equity Studies Published</div>
+        <div class="why-desc">No studies have tested whether LLMs assign different ESI scores to identical presentations based on patient age, sex, or race — a critical patient safety question.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">2022–</div>
+        <div class="why-title">Field Is Brand New</div>
+        <div class="why-desc">The majority of AI triage literature is small, single-center, and retrospective. The methodological bar is low and the opportunity for rigorous replication is wide open.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Research Questions ── -->
+  <div class="section-label">Research Questions</div>
+  <div class="full card accent-blue">
+    <div class="card-title">Proposed Questions — Select One Primary Focus</div>
+    <div class="rq-box primary">
+      <div class="rq-label primary">Primary Recommendation</div>
+      <p>"How accurately do large language models (GPT-4, Claude) assign Emergency Severity Index triage scores compared to emergency physicians using standardised clinical vignettes — and in which chief complaint categories do LLMs most frequently undertriage?"</p>
+    </div>
+    <div class="rq-box">
+      <div class="rq-label secondary">Alternative A · Equity Focus</div>
+      <p>"Do large language models exhibit demographic bias in emergency triage scoring when identical clinical presentations are assigned different patient ages, sexes, or races?"</p>
+    </div>
+    <div class="rq-box">
+      <div class="rq-label secondary">Alternative B · Prompt Engineering</div>
+      <p>"Does providing additional clinical context — vitals, past medical history, medications — to an LLM improve ESI triage scoring accuracy compared to chief complaint alone?"</p>
+    </div>
+  </div>
+
+  <!-- ── Study Design ── -->
+  <div class="section-label">Study Design Options</div>
+  <div class="full card">
+    <div class="card-title">Proposed Methodologies</div>
+    <div class="design-header">
+      <span>Design</span>
+      <span>Description</span>
+      <span>Difficulty</span>
+      <span>IRB</span>
+    </div>
+    <div class="design-option recommended">
+      <div>
+        <div class="design-name">Vignette Study</div>
+        <div class="design-rec">★ Recommended Start</div>
+      </div>
+      <div class="design-desc">30–50 standardised EM triage vignettes (chief complaint + age + vitals + brief history). Run through LLM API. Compared against blind ESI scoring by 3–5 EM attendings. Calculate accuracy, Cohen's kappa, undertriage/overtriage rate by chief complaint category.</div>
+      <span class="badge badge-green">Low</span>
+      <span class="badge badge-green">Not Required</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Retrospective Chart Review</div>
+    </div>
+      <div class="design-desc">De-identified triage records from institutional EMR. LLM-assigned ESI compared to nurse-assigned ESI and actual patient outcome (disposition, admission, ICU, mortality). Strongest external validity.</div>
+      <span class="badge badge-amber">Moderate</span>
+      <span class="badge badge-amber">Expedited</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Multi-LLM Comparison</div>
+      <div class="design-desc">Same vignette set run across GPT-4, Claude, Gemini, and Llama. Compare accuracy, inter-model consistency, and reasoning quality. No patient data required.</div>
+      <span class="badge badge-green">Low</span>
+      <span class="badge badge-green">Not Required</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Bias / Equity Study</div>
+      <div class="design-desc">Identical vignettes with systematically varied demographics (age, sex, race, primary language). Test whether LLM assigns different ESI scores for clinically equivalent presentations. High journal priority.</div>
+      <span class="badge badge-green">Low</span>
+      <span class="badge badge-green">Not Required</span>
+    </div>
+  </div>
+
+  <!-- ── Timeline + Budget ── -->
+  <div class="grid-2">
+
+    <div class="card accent-blue">
+      <div class="card-title">Proposed Timeline · Vignette Study</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">1</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 1–2</div>
+            <div class="tl-task">Study Design + Vignette Development</div>
+            <div class="tl-detail">Finalise research question and methodology. Draft 30–50 vignettes spanning 10 chief complaint categories. Attending review for clinical validity.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">2</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Week 3</div>
+            <div class="tl-task">Physician Scoring (Blinded)</div>
+            <div class="tl-detail">3–5 EM attendings or senior residents assign ESI scores to all vignettes, blinded to LLM output. Data collected via REDCap or standardised spreadsheet.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">3</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Week 4</div>
+            <div class="tl-task">LLM Data Collection</div>
+            <div class="tl-detail">All vignettes submitted to GPT-4 and Claude via API using a pre-registered standardised prompt. ESI scores and model reasoning logged systematically.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">4</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 5–6</div>
+            <div class="tl-task">Statistical Analysis</div>
+            <div class="tl-detail">Overall accuracy, Cohen's kappa, undertriage and overtriage rates. Subgroup analysis by chief complaint category, acuity level, and patient demographics.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">5</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 7–10</div>
+            <div class="tl-task">Manuscript Preparation + Submission</div>
+            <div class="tl-detail">Full manuscript drafted, co-author review, target journal submission. Abstract submitted to SAEM Annual Meeting in parallel.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card accent-green">
+      <div class="card-title">Proposed Budget</div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">OpenAI API Credits (GPT-4)</div>
+          <div class="resource-note">~50 vignettes × multiple prompt iterations</div>
+        </div>
+        <div class="resource-cost">~$20–30</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Anthropic API Credits (Claude)</div>
+          <div class="resource-note">Parallel LLM comparison arm</div>
+        </div>
+        <div class="resource-cost">~$10–20</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">REDCap / Google Forms</div>
+          <div class="resource-note">Physician scoring data collection</div>
+        </div>
+        <div class="resource-cost">Free</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Statistical Software (R)</div>
+          <div class="resource-note">Open source — kappa, accuracy, subgroup analysis</div>
+        </div>
+        <div class="resource-cost">Free</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">IRB Submission</div>
+          <div class="resource-note">Not required — no real patient data in vignette design</div>
+        </div>
+        <div class="resource-cost">$0</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Open Access Publication Fee</div>
+          <div class="resource-note">Western JEM waiver available for students; SAEM abstract is free</div>
+        </div>
+        <div class="resource-cost">$0–500</div>
+      </div>
+      <div class="total-row">
+        <div class="total-label">Total Estimated Cost</div>
+        <div class="total-value">$30–50</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Gaps + Outcomes ── -->
+  <div class="grid-2">
+
+    <div class="card accent-purple">
+      <div class="card-title">Gaps in Current Literature</div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Existing studies are small and single-center — <strong>rigorous multi-LLM replication with pre-registered methods is absent</strong></div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">No study has systematically identified <strong>which chief complaint categories carry the highest undertriage risk</strong> with LLM assistance</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">No published equity analysis — <strong>whether LLMs assign different triage scores based on patient demographics for identical presentations is unknown</strong></div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text"><strong>Head-to-head comparison of multiple current LLMs</strong> (GPT-4, Claude, Gemini) on the same standardised cases has not been performed</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">The effect of <strong>prompt design and clinical context quantity</strong> on triage accuracy is unstudied</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Literature is concentrated in urban academic EDs — <strong>community and rural ED contexts remain unrepresented</strong></div>
+      </div>
+    </div>
+
+    <div class="card accent-cyan">
+      <div class="card-title">Expected Outputs</div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Peer-reviewed publication</strong> targeting Academic Emergency Medicine, Western JEM, JAMIA, or npj Digital Medicine</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>SAEM Annual Meeting abstract</strong> — poster or oral presentation; submission deadline typically January</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Pilot dataset</strong> to support a future SAEM Foundation grant application or NIH R03 for a larger retrospective validation study</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Actionable findings</strong> — specific chief complaint categories where LLM undertriage risk is highest, directly informing safe deployment guidance</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Repeatable methodology</strong> — the vignette protocol can be re-run annually as new model versions are released, enabling longitudinal tracking</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Equity data</strong> — if demographic bias is detected, results have direct policy implications for any hospital considering LLM-assisted triage</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Target Journals ── -->
+  <div class="section-label">Target Journals for Submission</div>
+  <div class="full card accent-amber">
+    <div class="card-title">Ranked by Fit and Accessibility</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">NEJM AI</div>
+            <div class="journal-meta">Nature / NEJM Group · Highest impact · Best for equity angle</div>
+          </div>
+          <span class="badge badge-red">Reach</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">npj Digital Medicine</div>
+            <div class="journal-meta">Nature portfolio · Strong AI/clinical fit · Open access</div>
+          </div>
+          <span class="badge badge-red">Reach</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Annals of Emergency Medicine</div>
+            <div class="journal-meta">Highest impact pure EM journal · Competitive</div>
+          </div>
+          <span class="badge badge-amber">Target</span>
+        </div>
+      </div>
+      <div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Academic Emergency Medicine</div>
+            <div class="journal-meta">Core EM journal · Good fit for vignette studies</div>
+          </div>
+          <span class="badge badge-amber">Target</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">JAMIA</div>
+            <div class="journal-meta">Informatics focus · Strong for methods-heavy version</div>
+          </div>
+          <span class="badge badge-blue">Good Fit</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Western Journal of Emergency Medicine</div>
+            <div class="journal-meta">Open access · Student-friendly · Faster review cycle</div>
+          </div>
+          <span class="badge badge-green">Likely</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <div class="footer-left">Prepared by Michael Molen · MS4</div>
+    <div class="footer-right">
+      <div class="footer-stat">Budget <span>~$30–50</span></div>
+      <div class="footer-stat">Timeline <span>10 weeks</span></div>
+      <div class="footer-stat">IRB <span>Not required (vignette design)</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

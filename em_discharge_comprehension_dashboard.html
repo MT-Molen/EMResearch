@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Research Proposal — Discharge Instruction Comprehension in the ED</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .page-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      margin-bottom: 40px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #2d3348;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+    .header-left { flex: 1; }
+    .proposal-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+      background: #06b6d4;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; align-items: center; gap: 6px; }
+    .meta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .meta-value { font-size: 12px; color: #94a3b8; }
+    .meta-divider { width: 1px; height: 14px; background: #2d3348; align-self: center; }
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .header-stat { font-size: 11px; color: #64748b; }
+    .header-stat span { font-size: 14px; font-weight: 700; color: #4ade80; margin-left: 6px; }
+
+    /* ── Abstract ── */
+    .abstract {
+      background: #161b27;
+      border-left: 3px solid #06b6d4;
+      border-radius: 0 8px 8px 0;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+    .abstract-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #06b6d4;
+      margin-bottom: 8px;
+    }
+    .abstract p { font-size: 14px; color: #cbd5e1; line-height: 1.75; }
+
+    /* ── Grids ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .full { margin-bottom: 16px; }
+
+    /* ── Cards ── */
+    .card {
+      background: #1e2330;
+      border: 1px solid #2d3348;
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card.accent-red    { border-top: 3px solid #ef4444; }
+    .card.accent-blue   { border-top: 3px solid #3b82f6; }
+    .card.accent-green  { border-top: 3px solid #22c55e; }
+    .card.accent-amber  { border-top: 3px solid #f59e0b; }
+    .card.accent-purple { border-top: 3px solid #a855f7; }
+    .card.accent-cyan   { border-top: 3px solid #06b6d4; }
+
+    .card-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+
+    /* ── Stat blocks ── */
+    .stat-value { font-size: 30px; font-weight: 800; color: #f8fafc; line-height: 1; }
+    .stat-label { font-size: 12px; color: #94a3b8; margin-top: 5px; line-height: 1.4; }
+
+    /* ── Research questions ── */
+    .rq-box {
+      background: #161b27;
+      border: 1px solid #2d3348;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+    .rq-box:last-child { margin-bottom: 0; }
+    .rq-box.primary { border-color: #06b6d4; }
+    .rq-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .rq-label.primary { color: #06b6d4; }
+    .rq-label.secondary { color: #64748b; }
+    .rq-box p { font-size: 13px; color: #e2e8f0; line-height: 1.65; }
+
+    /* ── Survey instrument preview ── */
+    .survey-item {
+      background: #161b27;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      border: 1px solid #2d3348;
+    }
+    .survey-item:last-child { margin-bottom: 0; }
+    .survey-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #06b6d4;
+      color: #0f1117;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .survey-content { flex: 1; }
+    .survey-q { font-size: 13px; color: #f8fafc; font-weight: 600; margin-bottom: 3px; }
+    .survey-detail { font-size: 11px; color: #64748b; line-height: 1.5; }
+    .survey-domain {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: #0e2a30;
+      color: #06b6d4;
+      flex-shrink: 0;
+      align-self: center;
+      white-space: nowrap;
+    }
+
+    /* ── Study design ── */
+    .design-header {
+      display: grid;
+      grid-template-columns: 160px 1fr 90px 90px;
+      gap: 12px;
+      padding: 0 16px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #475569;
+      border-bottom: 1px solid #2d3348;
+      margin-bottom: 8px;
+    }
+    .design-option {
+      display: grid;
+      grid-template-columns: 160px 1fr 90px 90px;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+      background: #161b27;
+    }
+    .design-option:last-child { margin-bottom: 0; }
+    .design-option.recommended { border-color: #06b6d4; }
+    .design-name { font-size: 13px; font-weight: 700; color: #f8fafc; }
+    .design-rec { font-size: 10px; color: #06b6d4; margin-top: 2px; font-weight: 600; }
+    .design-desc { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .badge-green  { background: #14532d; color: #4ade80; }
+    .badge-amber  { background: #451a03; color: #fbbf24; }
+    .badge-red    { background: #450a0a; color: #f87171; }
+    .badge-blue   { background: #1e3a5f; color: #60a5fa; }
+
+    /* ── Timeline ── */
+    .timeline { display: flex; flex-direction: column; }
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding-bottom: 20px;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 36px;
+    }
+    .tl-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1e2330;
+      border: 2px solid #06b6d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: #06b6d4;
+      flex-shrink: 0;
+    }
+    .tl-line {
+      width: 2px;
+      flex: 1;
+      background: #2d3348;
+      min-height: 18px;
+      margin-top: 4px;
+    }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-content { padding-top: 3px; flex: 1; }
+    .tl-week {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #06b6d4;
+      margin-bottom: 2px;
+    }
+    .tl-task { font-size: 13px; font-weight: 600; color: #f8fafc; margin-bottom: 3px; }
+    .tl-detail { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+    /* ── Resources ── */
+    .resource-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2d3348;
+    }
+    .resource-item:last-child { border-bottom: none; }
+    .resource-name { font-size: 13px; color: #e2e8f0; }
+    .resource-note { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .resource-cost { font-size: 14px; font-weight: 700; color: #4ade80; }
+    .total-row {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #06b6d4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-label { font-size: 13px; font-weight: 700; color: #f8fafc; }
+    .total-value { font-size: 22px; font-weight: 800; color: #4ade80; }
+
+    /* ── Gaps ── */
+    .gap-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 11px;
+      align-items: flex-start;
+    }
+    .gap-item:last-child { margin-bottom: 0; }
+    .gap-icon {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #a855f7;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .gap-text { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+
+    /* ── Outcomes ── */
+    .outcome-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 11px;
+      align-items: flex-start;
+    }
+    .outcome-row:last-child { margin-bottom: 0; }
+    .outcome-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .outcome-text { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+
+    /* ── Journals ── */
+    .journal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #2d3348;
+    }
+    .journal-item:last-child { border-bottom: none; }
+    .journal-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+    .journal-meta { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    /* ── Why Now ── */
+    .why-now-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .why-item {
+      background: #161b27;
+      border-radius: 8px;
+      padding: 14px 16px;
+      border: 1px solid #2d3348;
+    }
+    .why-num { font-size: 22px; font-weight: 800; color: #06b6d4; line-height: 1; margin-bottom: 4px; }
+    .why-title { font-size: 12px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
+    .why-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
+
+    /* ── Section divider ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #475569;
+      margin: 28px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2d3348;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid #2d3348;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .footer-left { font-size: 12px; color: #475569; }
+    .footer-right { display: flex; gap: 20px; }
+    .footer-stat { font-size: 11px; color: #475569; }
+    .footer-stat span { color: #94a3b8; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4, .why-now-grid { grid-template-columns: 1fr; }
+      .design-option, .design-header { grid-template-columns: 1fr 1fr; }
+      .design-header { display: none; }
+      .header-top { flex-direction: column; }
+      .header-right { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ── Header ── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="proposal-tag">Research Proposal · 2026</div>
+        <h1>Discharge Instruction Comprehension<br>in the Emergency Department</h1>
+        <div class="header-meta">
+          <div class="meta-item">
+            <div class="meta-label">Field</div>
+            <div class="meta-value">Emergency Medicine</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-label">Focus</div>
+            <div class="meta-value">Health Literacy · Patient Education · Quality Improvement</div>
+          </div>
+          <div class="meta-divider"></div>
+          <div class="meta-item">
+            <div class="meta-label">Proposed By</div>
+            <div class="meta-value">Michael Molen · MS4</div>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-stat">Estimated Budget<span>~$0–200</span></div>
+        <div class="header-stat">Time to Data<span>6–8 weeks</span></div>
+        <div class="header-stat">IRB Required<span>Expedited</span></div>
+        <div class="header-stat">Publication Potential<span>High</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Abstract ── -->
+  <div class="abstract">
+    <div class="abstract-label">Overview</div>
+    <p>Patients discharged from the emergency department frequently leave without a clear understanding of their diagnosis, medications, or return precautions — a well-documented contributor to preventable 72-hour return visits, medication errors, and adverse outcomes. Despite this, the specific domains of comprehension failure remain inconsistently characterised across diverse urban ED populations. This study proposes a prospective cross-sectional survey of ED patients at Brookdale Hospital to quantify comprehension of key discharge instruction elements and identify the patient-level and system-level factors most strongly associated with poor understanding, with the ultimate aim of informing a targeted educational intervention.</p>
+  </div>
+
+  <!-- ── Why Now ── -->
+  <div class="section-label">Why This Research Matters Now</div>
+  <div class="full card">
+    <div class="why-now-grid">
+      <div class="why-item">
+        <div class="why-num">~80%</div>
+        <div class="why-title">Patients Forget or Misunderstand</div>
+        <div class="why-desc">Studies consistently show that up to 80% of patients forget or misunderstand at least one element of their discharge instructions within 30 minutes of receiving them.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">36%</div>
+        <div class="why-title">US Adults Have Low Health Literacy</div>
+        <div class="why-desc">Over a third of American adults read below a 6th-grade level, yet most discharge paperwork is written at a 10th-grade level or higher. The gap is widest in urban EDs.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">$1,500+</div>
+        <div class="why-title">Average Cost Per Return Visit</div>
+        <div class="why-desc">Preventable 72-hour return visits cost the healthcare system billions annually. Poor discharge comprehension is one of the most modifiable contributing factors.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Research Questions ── -->
+  <div class="section-label">Research Questions</div>
+  <div class="full card accent-cyan">
+    <div class="card-title">Proposed Questions — Select One Primary Focus</div>
+    <div class="rq-box primary">
+      <div class="rq-label primary">Primary Recommendation</div>
+      <p>"What proportion of patients discharged from Brookdale Hospital ED can correctly identify their primary diagnosis, prescribed medications, return precautions, and follow-up instructions — and which of these domains shows the lowest comprehension rate?"</p>
+    </div>
+    <div class="rq-box">
+      <div class="rq-label secondary">Alternative A · Predictors Focus</div>
+      <p>"What patient-level factors — age, primary language, health literacy score, time of day, wait time — are independently associated with poor discharge instruction comprehension in an urban ED?"</p>
+    </div>
+    <div class="rq-box">
+      <div class="rq-label secondary">Alternative B · Intervention Focus</div>
+      <p>"Does a teach-back or visual-aid discharge intervention improve patient comprehension of diagnosis, medications, and return precautions compared to standard printed instructions alone?"</p>
+    </div>
+  </div>
+
+  <!-- ── Survey Instrument ── -->
+  <div class="section-label">Proposed Survey Instrument</div>
+  <div class="full card accent-cyan">
+    <div class="card-title">Core Questions — Administered 20–30 Minutes After Discharge Papers Given</div>
+    <div class="survey-item">
+      <div class="survey-num">1</div>
+      <div class="survey-content">
+        <div class="survey-q">What did the doctor say is wrong with you today?</div>
+        <div class="survey-detail">Open-ended. Coded as correct / partially correct / incorrect against chart diagnosis. Primary outcome measure.</div>
+      </div>
+      <div class="survey-domain">Diagnosis</div>
+    </div>
+    <div class="survey-item">
+      <div class="survey-num">2</div>
+      <div class="survey-content">
+        <div class="survey-q">What new medications were you prescribed today, and what are they for?</div>
+        <div class="survey-detail">Open-ended. Coded against discharge prescription list. Captures both recall and understanding of indication.</div>
+      </div>
+      <div class="survey-domain">Medications</div>
+    </div>
+    <div class="survey-item">
+      <div class="survey-num">3</div>
+      <div class="survey-content">
+        <div class="survey-q">What symptoms should cause you to come back to the ER?</div>
+        <div class="survey-detail">Open-ended. Coded against documented return precautions. Identifies highest-risk knowledge gap.</div>
+      </div>
+      <div class="survey-domain">Return Precautions</div>
+    </div>
+    <div class="survey-item">
+      <div class="survey-num">4</div>
+      <div class="survey-content">
+        <div class="survey-q">Who are you supposed to follow up with, and when?</div>
+        <div class="survey-detail">Open-ended. Coded against discharge follow-up instructions. Captures both provider type and timeframe.</div>
+      </div>
+      <div class="survey-domain">Follow-Up</div>
+    </div>
+    <div class="survey-item">
+      <div class="survey-num">5</div>
+      <div class="survey-content">
+        <div class="survey-q">How clearly did the doctor or nurse explain your discharge instructions? (1–5 scale)</div>
+        <div class="survey-detail">Likert scale. Allows correlation between perceived clarity and actual comprehension — these often diverge.</div>
+      </div>
+      <div class="survey-domain">Perception</div>
+    </div>
+    <div class="survey-item">
+      <div class="survey-num">6</div>
+      <div class="survey-content">
+        <div class="survey-q">What is the highest level of education you completed? What is your primary language?</div>
+        <div class="survey-detail">Demographic covariates. Enables subgroup analysis by literacy proxy and language concordance with provider.</div>
+      </div>
+      <div class="survey-domain">Demographics</div>
+    </div>
+  </div>
+
+  <!-- ── Study Design ── -->
+  <div class="section-label">Study Design Options</div>
+  <div class="full card">
+    <div class="card-title">Proposed Methodologies</div>
+    <div class="design-header">
+      <span>Design</span>
+      <span>Description</span>
+      <span>Difficulty</span>
+      <span>IRB</span>
+    </div>
+    <div class="design-option recommended">
+      <div>
+        <div class="design-name">Cross-Sectional Survey</div>
+        <div class="design-rec">★ Recommended Start</div>
+      </div>
+      <div class="design-desc">Approach consenting adult patients 20–30 minutes after receiving discharge papers. Administer 6-question verbal survey. Compare answers against chart. 80–120 patients needed for meaningful subgroup analysis. No intervention required.</div>
+      <span class="badge badge-green">Low</span>
+      <span class="badge badge-amber">Expedited</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Pre / Post Intervention</div>
+      <div class="design-desc">Baseline survey phase, followed by implementation of a teach-back or visual discharge aid intervention, followed by post-intervention survey. Measures whether the intervention improves comprehension. Strongest clinical impact.</div>
+      <span class="badge badge-amber">Moderate</span>
+      <span class="badge badge-amber">Expedited</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Survey + Return Visit Linkage</div>
+      <div class="design-desc">Survey patients at discharge, then link their survey comprehension scores to 72-hour return visit data from the EMR. Tests whether poor comprehension predicts return visits. Requires EMR access.</div>
+      <span class="badge badge-amber">Moderate</span>
+      <span class="badge badge-amber">Expedited</span>
+    </div>
+    <div class="design-option">
+      <div class="design-name">Quality Improvement (QI)</div>
+      <div class="design-desc">Framed as QI rather than research — baseline comprehension measure, implement standardised visual discharge template, remeasure. May not require full IRB. Publishable in QI-specific journals.</div>
+      <span class="badge badge-green">Low</span>
+      <span class="badge badge-green">May Waive</span>
+    </div>
+  </div>
+
+  <!-- ── Timeline + Budget ── -->
+  <div class="grid-2">
+
+    <div class="card accent-cyan">
+      <div class="card-title">Proposed Timeline · Cross-Sectional Survey</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">1</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 1–2</div>
+            <div class="tl-task">Study Design + Survey Finalisation</div>
+            <div class="tl-detail">Finalise research question, draft survey instrument, attending review for clinical validity and face validity of coding rubric.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">2</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 2–5</div>
+            <div class="tl-task">IRB Submission + Approval</div>
+            <div class="tl-detail">Submit expedited IRB application. Minimal-risk survey studies typically receive expedited or exempt review within 2–4 weeks at most institutions.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">3</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 5–9</div>
+            <div class="tl-task">Data Collection</div>
+            <div class="tl-detail">Enrol 80–120 consenting adult patients across varied shifts (day, evening, overnight). Verbal survey takes ~5 minutes per patient. Log responses in REDCap.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">4</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 9–11</div>
+            <div class="tl-task">Analysis</div>
+            <div class="tl-detail">Comprehension rates per domain, logistic regression for predictors of poor comprehension, subgroup analysis by language, education, age, time of day.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left"><div class="tl-dot">5</div><div class="tl-line"></div></div>
+          <div class="tl-content">
+            <div class="tl-week">Weeks 11–16</div>
+            <div class="tl-task">Manuscript + Submission</div>
+            <div class="tl-detail">Draft manuscript, co-author review, journal submission. Simultaneously prepare QI proposal for intervention phase if results support it.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card accent-green">
+      <div class="card-title">Proposed Budget</div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">REDCap (Survey Platform)</div>
+          <div class="resource-note">Institutional license — available free at most academic medical centres</div>
+        </div>
+        <div class="resource-cost">Free</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Printed Consent Forms</div>
+          <div class="resource-note">~120 patients × 2 pages</div>
+        </div>
+        <div class="resource-cost">~$5</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Statistical Software (R)</div>
+          <div class="resource-note">Open source — logistic regression, descriptive stats</div>
+        </div>
+        <div class="resource-cost">Free</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">IRB Submission Fee</div>
+          <div class="resource-note">Expedited review — many institutions waive for student projects</div>
+        </div>
+        <div class="resource-cost">$0–50</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Patient Incentive (Optional)</div>
+          <div class="resource-note">$5 gift card per participant improves enrolment — 120 patients</div>
+        </div>
+        <div class="resource-cost">$0–150</div>
+      </div>
+      <div class="resource-item">
+        <div>
+          <div class="resource-name">Open Access Publication Fee</div>
+          <div class="resource-note">Western JEM student waiver available; many journals free for authors</div>
+        </div>
+        <div class="resource-cost">$0–500</div>
+      </div>
+      <div class="total-row">
+        <div class="total-label">Total Estimated Cost</div>
+        <div class="total-value">$0–200</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Gaps + Outcomes ── -->
+  <div class="grid-2">
+
+    <div class="card accent-purple">
+      <div class="card-title">Gaps in Current Literature</div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Most published studies are over a decade old — <strong>post-COVID ED volumes, staffing pressures, and digital discharge systems have changed the landscape</strong></div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Existing literature rarely identifies <strong>which specific instruction domain fails most — diagnosis, medications, return precautions, or follow-up</strong></div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Almost no data from <strong>urban safety-net hospitals</strong> with high proportions of non-English-speaking and low-literacy patients — exactly the population at highest risk</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">The gap between <strong>patient-perceived clarity and actual comprehension</strong> is understudied — patients often rate instructions as clear while demonstrating poor recall</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text"><strong>No direct link established</strong> between measured comprehension scores and 72-hour return visit rates at the individual patient level</div>
+      </div>
+      <div class="gap-item">
+        <div class="gap-icon"></div>
+        <div class="gap-text">Studies rarely examine <strong>time-of-day or shift-level variation</strong> — overnight discharges may have systematically worse comprehension due to staffing and patient fatigue</div>
+      </div>
+    </div>
+
+    <div class="card accent-cyan">
+      <div class="card-title">Expected Outputs</div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Peer-reviewed publication</strong> targeting Patient Education and Counseling, Academic Emergency Medicine, or Western JEM</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>SAEM Annual Meeting abstract</strong> — health equity and patient education submissions consistently accepted; poster or oral presentation</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Actionable QI data</strong> for Brookdale Hospital — comprehension rates by domain give the department a concrete target for discharge process improvement</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Pilot data</strong> to support a follow-on intervention study (teach-back, visual aids, multilingual templates) and associated grant application</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Direct content for EM Decoded</strong> — real data on what patients don't understand at discharge is highly shareable and directly advances the health literacy mission</div>
+      </div>
+      <div class="outcome-row">
+        <div class="outcome-dot"></div>
+        <div class="outcome-text"><strong>Residency application narrative</strong> — demonstrates commitment to health equity and patient education in a community hospital setting</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Target Journals ── -->
+  <div class="section-label">Target Journals for Submission</div>
+  <div class="full card accent-amber">
+    <div class="card-title">Ranked by Fit and Accessibility</div>
+    <div class="grid-2" style="margin-bottom:0;">
+      <div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Patient Education and Counseling</div>
+            <div class="journal-meta">Top journal for health literacy research · Strong fit for primary question</div>
+          </div>
+          <span class="badge badge-red">Reach</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Annals of Emergency Medicine</div>
+            <div class="journal-meta">Highest impact EM journal · Competitive but appropriate</div>
+          </div>
+          <span class="badge badge-amber">Target</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Academic Emergency Medicine</div>
+            <div class="journal-meta">Strong fit for ED-based survey studies · Peer-reviewed</div>
+          </div>
+          <span class="badge badge-amber">Target</span>
+        </div>
+      </div>
+      <div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Journal of Health Communication</div>
+            <div class="journal-meta">Dedicated health literacy scope · Good for equity angle</div>
+          </div>
+          <span class="badge badge-blue">Good Fit</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">BMJ Open Quality</div>
+            <div class="journal-meta">Ideal if framed as QI project · Open access · Fast review</div>
+          </div>
+          <span class="badge badge-green">Likely</span>
+        </div>
+        <div class="journal-item">
+          <div>
+            <div class="journal-name">Western Journal of Emergency Medicine</div>
+            <div class="journal-meta">Open access · Student-friendly · Waiver available</div>
+          </div>
+          <span class="badge badge-green">Likely</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <div class="footer-left">Prepared by Michael Molen · MS4</div>
+    <div class="footer-right">
+      <div class="footer-stat">Budget <span>~$0–200</span></div>
+      <div class="footer-stat">Timeline <span>16 weeks</span></div>
+      <div class="footer-stat">IRB <span>Expedited review</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
